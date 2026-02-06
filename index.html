@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- HERO / ENVELOPE -->
+  <section class="hero" aria-label="Valentine letter">
+    <div class="envelope-wrap">
+      <button id="envelopeBtn" class="envelope" aria-expanded="false" aria-controls="letterPanel">
+        <span class="envelope__label">
+          Tap to open
+        </span>
+
+        <span class="envelope__back"></span>
+        <span class="envelope__paper"></span>
+        <span class="envelope__front"></span>
+        <span class="envelope__flap"></span>
+      </button>
+
+      <div id="letterPanel" class="letter" role="dialog" aria-modal="false" aria-hidden="true">
+        <div class="letter__inner">
+          <div class="letter__header">
+            <div class="letter__title">This is for you!</div>
+            <div class="letter__hint">Click the envelope again to close</div>
+          </div>
+
+          <div class="letter__body" contenteditable="true" spellcheck="true">
+            <p>Mattie,</p>
+            <p>
+              Happy Valentine’s Day. This is a small listening space I made for you.
+              I hope you will like it and will found joy in your gift.
+            </p>
+            <p>
+              Thank you for being gentle, honest, and brave enough to reach out.
+              I’m glad you’re in my life.
+            </p>
+            <p>— A.</p>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scrollHint">Music down there!</div>
+  </section>
+
+  <!-- PLAYER -->
+  <main class="stage" aria-label="Music player">
+    <div class="playerCard">
+        <audio id="audio" preload="metadata"></audio>
+      <div class="playerTop">
+        <div class="brand">
+          <div class="brand__title">Our two month</div>
+          <div class="brand__sub">a private player only for you</div>
+        </div>
+
+        <div class="now">
+          <div id="trackTitle" class="now__title">—</div>
+          <div id="trackMeta" class="now__meta">00:00 / 00:00</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="prevBtn" class="iconBtn" type="button" aria-label="Previous track">⟵</button>
+        <button id="playBtn" class="playBtn" type="button" aria-label="Play/Pause">Play</button>
+        <button id="nextBtn" class="iconBtn" type="button" aria-label="Next track">⟶</button>
+      </div>
+
+      <div class="progress">
+        <input id="seek" type="range" min="0" max="100" value="0" aria-label="Seek" />
+      </div>
+
+      <ul id="trackList" class="trackList" aria-label="Track list"></ul>
+
+      <audio id="audio" preload="metadata"></audio>
+    </div>
+  </main>
+
+  <script src="player.js"></script>
+</body>
+</html>
