@@ -2,84 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Will you be my Valentine?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Do you will be my Valentine?</title>
+  <link rel="icon" href="data:," />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <!-- HERO / ENVELOPE -->
-  <section class="hero" aria-label="Valentine letter">
-    <div class="envelope-wrap">
-      <button id="envelopeBtn" class="envelope" aria-expanded="false" aria-controls="letterPanel">
-        <span class="envelope__label">
-          Tap to open
-        </span>
+  <!-- SPLASH (Stage 0) -->
+  <div id="splash" class="splash" role="button" aria-label="Enter">
+    <div class="splash__noise" aria-hidden="true"></div>
+    <!-- Положи свою картинку сюда -->
+    <img class="splash__img" src="img/splash.png" alt="Intro" draggable="false">
+    <div class="splash__hint" aria-hidden="true">click to enter</div>
+  </div>
 
-        <span class="envelope__back"></span>
-        <span class="envelope__paper"></span>
-        <span class="envelope__front"></span>
-        <span class="envelope__flap"></span>
-      </button>
+  <!-- Click-glitch layer -->
+  <div id="glitchLayer" aria-hidden="true"></div>
 
-      <div id="letterPanel" class="letter" role="dialog" aria-modal="false" aria-hidden="true">
-        <div class="letter__inner">
-          <div class="letter__header">
-            <div class="letter__title">This is for you!</div>
-            <div class="letter__hint">Click the envelope again to close</div>
+  <!-- PAGE (one continuous world) -->
+  <main class="page" id="pageRoot" aria-hidden="true">
+
+    <!-- Stage 1: Envelope -->
+    <section class="section hero" id="top">
+      <div class="wrap">
+        <button id="envelopeBtn" class="envelope microTarget" type="button" aria-expanded="false">
+
+          <!-- FRONT FACE -->
+          <div class="envFront">
+            <div class="envFront__title">For my dear boyfriend</div>
+            <div class="envFront__sub">click</div>
           </div>
 
-          <div class="letter__body" contenteditable="true" spellcheck="true">
-            <p>Mattie,</p>
-            <p>
-              Happy Valentine’s Day. This is a small listening space I made for you.
-              I hope you will like it and will found joy in your gift.
-            </p>
-            <p>
-              Thank you for being gentle, honest, and brave enough to reach out.
-              I’m glad you’re in my life.
-            </p>
-            <p>— A.</p>
+          <!-- BACK / SHAPES -->
+          <div class="envelope__back"></div>
+          <div class="envelope__paper"></div>
+          <div class="envelope__flap"></div>
+          <div class="envelope__front"></div>
+
+          <!-- LETTER -->
+          <div id="letterPanel" class="letter" aria-hidden="true">
+            <div class="letter__inner microTarget">
+              <div class="letter__title">Happy Valentine’s Day</div>
+
+              <div class="letter__body" tabindex="0">
+                <p>Mattie,</p>
+                <p>
+                  Happy Valentine’s Day. This is a small listening space I made for you.
+                  I hope you will find joy in your gift!
+                </p>
+                <p>
+                  Thank you for being gentle, honest, and brave enough to reach out.
+                  I’m glad you’re in my life.
+                </p>
+                <p>— A.</p>
+              </div>
+
+              <div class="pill">P.S. I honk you very much!</div>
+
+              <button id="closeLetterBtn" class="closeLetterBtn" type="button">
+                Click again to close letter
+              </button>
+            </div>
           </div>
+
+        </button>
+      </div>
+    </section>
+
+    <!-- Stage 2: Player -->
+    <section class="section stage" id="player">
+      <div class="wrap">
+        <div id="playerCard" class="playerCard microTarget">
+          <button id="playerToggle" class="playerToggle" type="button" aria-expanded="false">
+            <span class="playerToggle__title">Our two month</span>
+            <span class="playerToggle__hint">click to open</span>
+          </button>
+
+          <div id="playerBody" class="playerBody" aria-hidden="true">
+            <div class="playerTop">
+              <div class="brand">
+                <div class="brand__title">OUR TWO MONTH</div>
+                <div class="brand__sub">a private player</div>
+              </div>
+
+              <div class="now">
+                <div id="trackTitle" class="now__title">—</div>
+                <div id="trackMeta" class="now__meta">00:00 / 00:00</div>
+              </div>
+            </div>
+
+            <div class="controls">
+              <button id="prevBtn" class="iconBtn" type="button">←</button>
+              <button id="playBtn" class="playBtn" type="button">Play</button>
+              <button id="nextBtn" class="iconBtn" type="button">→</button>
+            </div>
+
+            <div class="progress">
+              <input id="seek" type="range" min="0" max="100" value="0" />
+            </div>
+
+            <div class="volumeRow">
+              <span class="volLabel">VOL</span>
+              <input id="vol" type="range" min="0" max="1" step="0.01" value="0.85" />
+            </div>
+
+            <ul id="trackList" class="trackList" aria-label="Track list"></ul>
+
+            <audio id="audio" preload="metadata"></audio>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="scrollHint">Music down there!</div>
-  </section>
-
-  <!-- PLAYER -->
-  <main class="stage" aria-label="Music player">
-    <div class="playerCard">
-        <audio id="audio" preload="metadata"></audio>
-      <div class="playerTop">
-        <div class="brand">
-          <div class="brand__title">Our two month</div>
-          <div class="brand__sub">a private player only for you</div>
-        </div>
-
-        <div class="now">
-          <div id="trackTitle" class="now__title">—</div>
-          <div id="trackMeta" class="now__meta">00:00 / 00:00</div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button id="prevBtn" class="iconBtn" type="button" aria-label="Previous track">⟵</button>
-        <button id="playBtn" class="playBtn" type="button" aria-label="Play/Pause">Play</button>
-        <button id="nextBtn" class="iconBtn" type="button" aria-label="Next track">⟶</button>
-      </div>
-
-      <div class="progress">
-        <input id="seek" type="range" min="0" max="100" value="0" aria-label="Seek" />
-      </div>
-
-      <ul id="trackList" class="trackList" aria-label="Track list"></ul>
-
-      <audio id="audio" preload="metadata"></audio>
-    </div>
   </main>
 
-  <script src="player.js"></script>
+  <script src="player.js" defer></script>
 </body>
 </html>
