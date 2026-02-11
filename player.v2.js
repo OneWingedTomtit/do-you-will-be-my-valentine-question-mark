@@ -297,7 +297,6 @@ function hideIntro(){
   intro.classList.add("isHidden");
   setTimeout(() => intro.setAttribute("aria-hidden","true"), 480);
 }
-
 introBtn?.addEventListener("click", () => {
   miniStars(window.innerWidth/2, window.innerHeight/2, 18);
   hideIntro();
@@ -305,8 +304,6 @@ introBtn?.addEventListener("click", () => {
 
 /* =========================
    MOBILE FULLSCREEN LETTER OVERLAY
-   - Moves #letterPanel into <body> overlay on mobile when opened
-   - Avoids transform bugs forever
 ========================= */
 let letterOverlay = null;
 let letterPlaceholder = null;
@@ -336,12 +333,9 @@ function ensureOverlay(){
   letterOverlay.appendChild(frame);
   document.body.appendChild(letterOverlay);
 
-  // close by clicking backdrop
   letterOverlay.addEventListener("click", (e) => {
     if (e.target === letterOverlay) closeLetterOverlay();
   });
-
-  // close by X
   header.querySelector(".ovX")?.addEventListener("click", closeLetterOverlay);
 
   return letterOverlay;
@@ -354,29 +348,23 @@ function openLetterOverlay(){
   const ovBody = ov.querySelector("#letterOverlayBody");
   if (!ovBody) return;
 
-  // save original spot
   if (!letterPlaceholder){
     letterPlaceholder = document.createComment("letterPanel-placeholder");
     letterPanel.parentNode?.insertBefore(letterPlaceholder, letterPanel);
   }
 
-  // move panel into overlay
   ovBody.appendChild(letterPanel);
 
-  // mode flags for CSS
   document.documentElement.classList.add("mobileLetterOverlayOpen");
   document.body.classList.add("lockScroll");
 
-  // adjust close button text on mobile
-  if (closeLetterBtn) closeLetterBtn.textContent = "Close";
-
-  // make sure aria matches
   ov.style.display = "flex";
   ov.setAttribute("aria-hidden", "false");
+
+  if (closeLetterBtn) closeLetterBtn.textContent = "Close";
 }
 
 function closeLetterOverlay(){
-  // keep close logic centralized
   envState = 0;
   applyEnvelope();
 }
@@ -384,12 +372,10 @@ function closeLetterOverlay(){
 function restoreLetterPanel(){
   if (!letterPanel) return;
 
-  // move back to original DOM spot
   if (letterPlaceholder && letterPlaceholder.parentNode){
     letterPlaceholder.parentNode.insertBefore(letterPanel, letterPlaceholder);
   }
 
-  // hide overlay
   if (letterOverlay){
     letterOverlay.style.display = "none";
     letterOverlay.setAttribute("aria-hidden", "true");
@@ -416,22 +402,30 @@ function applyEnvelope(){
   envelopeBtn?.setAttribute("aria-expanded", String(isLetter));
   letterPanel?.setAttribute("aria-hidden", String(!isLetter));
 
-  // button label
   if (closeLetterBtn){
     closeLetterBtn.textContent = mobile ? "Close" : "CLICK AGAIN TO CLOSE LETTER";
   }
 
-  // MOBILE: fullscreen overlay
-  if (mobile && isLetter){
-    openLetterOverlay();
-  } else {
-    restoreLetterPanel();
-  }
+  if (mobile && isLetter) openLetterOverlay();
+  else restoreLetterPanel();
 }
 
 envelopeBtn?.addEventListener("click", () => {
-  if (envState >= 2) return; // close only via button
-  envState = envState + 1;   // 0->1->2
+  const mobile = isMobile();
+
+  // Desktop: allow click-to-close like before
+  if (!mobile && envState >= 2){
+    envState = 0;
+    applyEnvelope();
+    pulse(envelopeBtn);
+    miniStarsRandomNear(envelopeBtn, 12);
+    return;
+  }
+
+  // Mobile: close only by button
+  if (mobile && envState >= 2) return;
+
+  envState = envState + 1; // 0->1->2
   applyEnvelope();
   pulse(envelopeBtn);
   maybeTear(letterPanel);
@@ -458,7 +452,6 @@ function setPlayerOpen(open){
   pulse(playerCard);
   maybeTear(playerCard);
 }
-
 playerToggle?.addEventListener("click", () => {
   const open = !playerCard.classList.contains("isOpen");
   setPlayerOpen(open);
@@ -585,7 +578,6 @@ audio.addEventListener("play", updateUI);
 audio.addEventListener("pause", updateUI);
 audio.addEventListener("ended", () => { nextTrack(); });
 
-/* seek */
 seek?.addEventListener("input", () => {
   isSeeking = true;
   pulse(playerCard);
@@ -600,7 +592,6 @@ seek?.addEventListener("change", () => {
   maybeTear(playerCard);
 });
 
-/* volume */
 if (volume){
   audio.volume = Number(volume.value);
   volume.addEventListener("input", () => {
@@ -678,30 +669,15 @@ document.addEventListener("click", (e) => {
   miniStars(e.clientX, e.clientY, 10);
 }, { passive:true });
 
-/* ambient glitch on scroll */
-let scrollTick = 0;
-window.addEventListener("scroll", () => {
-  const now = Date.now();
-  if (now - scrollTick < 120) return;
-  scrollTick = now;
-
-  if (Math.random() < 0.25){
-    pulse(playerCard);
-    maybeTear(playerCard);
-  }
-}, { passive:true });
-
 /* =========================
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
   applyEnvelope();
   setPlayerOpen(false);
-
   loadTrack(0, false);
   renderTrackList();
   preloadDurations();
 });
 
-// If open letter and screen changes, re-apply mode safely
 window.addEventListener("resize", () => applyEnvelope(), { passive:true });

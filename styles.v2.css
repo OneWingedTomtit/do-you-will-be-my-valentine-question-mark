@@ -1,17 +1,16 @@
-/* =========================
-   Theme
-========================= */
 :root{
-  --bg0:#070810;
+  --bg0:#050611;
   --bg1:#0b0d1a;
   --glass: rgba(255,255,255,.06);
   --glass2: rgba(255,255,255,.10);
   --stroke: rgba(255,255,255,.14);
   --text:#e9eefc;
   --muted: rgba(233,238,252,.70);
-  --shadow: 0 20px 60px rgba(0,0,0,.55);
-  --radius: 22px;
+  --shadow: 0 24px 80px rgba(0,0,0,.60);
+  --radius: 24px;
   --radius2: 16px;
+  --accentA: rgba(140,80,255,.55);
+  --accentB: rgba(0,255,210,.35);
 }
 
 *{ box-sizing:border-box; }
@@ -20,8 +19,9 @@ body{
   margin:0;
   color: var(--text);
   background:
-    radial-gradient(1200px 700px at 50% 20%, rgba(140,80,255,.22), transparent 55%),
-    radial-gradient(900px 600px at 20% 80%, rgba(0,255,210,.10), transparent 55%),
+    radial-gradient(1000px 700px at 50% 10%, rgba(140,80,255,.25), transparent 60%),
+    radial-gradient(900px 600px at 20% 90%, rgba(0,255,210,.12), transparent 55%),
+    radial-gradient(600px 500px at 80% 60%, rgba(255,80,200,.08), transparent 60%),
     linear-gradient(180deg, var(--bg0), var(--bg1));
   font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   overflow-x:hidden;
@@ -32,10 +32,8 @@ body.lockScroll{
   touch-action: none;
 }
 
-/* =========================
-   Intro overlay
-========================= */
-#intro{
+/* Intro */
+.intro{
   position: fixed;
   inset: 0;
   z-index: 9999;
@@ -45,15 +43,38 @@ body.lockScroll{
   background: rgba(0,0,0,.72);
   backdrop-filter: blur(10px);
 }
-#intro.isHidden{
+.intro.isHidden{
   opacity:0;
   pointer-events:none;
   transition: opacity .45s ease;
 }
+.introCard{
+  width: min(520px, 92vw);
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(10,12,20,.70);
+  box-shadow: var(--shadow);
+  padding: 18px 16px 16px;
+  text-align:center;
+}
+.introTitle{
+  font-weight: 1000;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+.introSub{
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 800;
+}
+.introHint{
+  margin-top: 10px;
+  font-size: 12px;
+  color: rgba(233,238,252,.55);
+}
 
-/* =========================
-   Layout
-========================= */
+/* Layout */
 .section{
   width: 100%;
   min-height: 100vh;
@@ -65,73 +86,167 @@ body.lockScroll{
 
 .hero{
   width: min(920px, 94vw);
-  margin-top: 20px;
+  margin-top: 18px;
   position: relative;
 }
 
-/* =========================
-   Envelope / Stage
-   (Если у тебя в HTML есть .stage/.topRow/.brand — они красиво оживут.
-    Если нет — ничего не ломаем.)
-========================= */
-.hero .stage{
-  position: relative;
-  border-radius: var(--radius);
-  border: 1px solid var(--stroke);
-  background: rgba(255,255,255,.05);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-  padding: 18px;
-}
-
-.hero .topRow{
+.topRow{
   display:flex;
-  align-items:center;
+  align-items:baseline;
   justify-content:space-between;
   gap: 12px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
-
-.hero .brand{
-  font-weight: 900;
-  letter-spacing: .2em;
+.brand{
+  font-weight: 1000;
+  letter-spacing: .24em;
   text-transform: uppercase;
   font-size: 12px;
   color: rgba(233,238,252,.85);
 }
+.brandSub{
+  color: rgba(233,238,252,.60);
+  font-weight: 800;
+  font-size: 12px;
+}
 
-#envelopeBtn{
+/* Stage */
+.stage{
+  border-radius: var(--radius);
   border: 1px solid var(--stroke);
-  background: rgba(0,0,0,.22);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 18px;
+  position: relative;
+}
+
+.stage::before{
+  content:"";
+  position:absolute;
+  inset:-60px;
+  background:
+    radial-gradient(400px 300px at 20% 30%, rgba(140,80,255,.22), transparent 60%),
+    radial-gradient(320px 260px at 80% 70%, rgba(0,255,210,.14), transparent 60%);
+  filter: blur(18px);
+  opacity:.8;
+  pointer-events:none;
+}
+
+/* Buttons */
+.btn{
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.18);
   color: var(--text);
   border-radius: 16px;
   padding: 12px 14px;
-  font-weight: 800;
+  font-weight: 900;
   cursor:pointer;
 }
+.btn.small{ padding: 10px 12px; border-radius: 14px; }
+.btnPrimary{
+  background: linear-gradient(90deg, rgba(140,80,255,.35), rgba(0,255,210,.18));
+  border-color: rgba(255,255,255,.18);
+}
+.btnGhost{
+  background: rgba(0,0,0,.18);
+}
 
-/* Desktop flip */
+/* Envelope */
+.envelopeBtn{
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.env{
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 26px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.14);
+  background:
+    radial-gradient(500px 350px at 30% 30%, rgba(140,80,255,.18), transparent 60%),
+    radial-gradient(420px 320px at 75% 70%, rgba(0,255,210,.10), transparent 55%),
+    rgba(255,255,255,.04);
+  box-shadow: 0 18px 60px rgba(0,0,0,.50);
+}
+
+.envBack{
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.12));
+  opacity:.9;
+}
+
+.envFront{
+  position:absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 8%;
+  height: 46%;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+  transform: translateY(0);
+  transition: transform .45s ease;
+}
+
+.envFlap{
+  position:absolute;
+  left: 6%;
+  right: 6%;
+  top: 10%;
+  height: 52%;
+  transform-origin: top center;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.10), rgba(0,0,0,.18));
+  clip-path: polygon(0 0, 100% 0, 50% 72%);
+  transition: transform .55s ease;
+}
+
+.envLabel{
+  position:absolute;
+  left: 10%;
+  right: 10%;
+  top: 22%;
+  text-align:center;
+  color: rgba(233,238,252,.75);
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  font-weight: 1000;
+  pointer-events:none;
+  text-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+.envLabelTop{ font-size: 12px; opacity:.85; }
+.envLabelMid{ margin-top: 16px; font-size: 11px; opacity:.65; }
+
+/* Desktop flip states */
 @media (min-width: 981px){
   .hero.isFlip .stage{
     transform: perspective(1000px) rotateY(10deg);
     transform-origin: center;
     transition: transform .45s ease;
   }
-  .hero.isBack .stage{
-    transform: perspective(1000px) rotateY(160deg);
-  }
-  .hero.isLetter .stage{
-    transform: perspective(1000px) rotateY(0deg);
-  }
+  .hero.isBack .stage{ transform: perspective(1000px) rotateY(160deg); }
+  .hero.isLetter .stage{ transform: perspective(1000px) rotateY(0deg); }
 }
 
-/* =========================
-   Letter panel (desktop card)
-========================= */
-#letterPanel.letter,
-#letterPanel{
-  width: min(620px, 92vw);
-  margin: 12px auto 0;
+/* When open: flap lifts a bit */
+.hero.isLetter .envFlap{ transform: rotateX(140deg); }
+.hero.isLetter .envFront{ transform: translateY(6px); }
+
+/* Letter */
+.letter{
+  width: min(640px, 94vw);
+  margin: 14px auto 0;
   border-radius: var(--radius);
   border: 1px solid rgba(255,255,255,.16);
   background: rgba(10,12,20,.62);
@@ -139,20 +254,19 @@ body.lockScroll{
   box-shadow: 0 16px 50px rgba(0,0,0,.45);
   padding: 16px 16px 14px;
   overflow: hidden;
+  position: relative;
+  z-index: 2;
 }
-
-#letterPanel[aria-hidden="true"]{
-  display:none;
-}
+#letterPanel[aria-hidden="true"]{ display:none; }
 
 .letter__title{
   text-align:center;
-  font-weight: 900;
+  font-weight: 1000;
   letter-spacing: .25em;
   text-transform: uppercase;
   font-size: 12px;
-  color: rgba(233,238,252,.78);
-  margin: 4px 0 12px;
+  color: rgba(233,238,252,.80);
+  margin: 6px 0 12px;
 }
 
 .letter__body{
@@ -161,16 +275,15 @@ body.lockScroll{
   background: rgba(0,0,0,.18);
   padding: 12px 12px;
 }
-
 .letter__body p{
   margin: 8px 0;
-  color: rgba(233,238,252,.86);
+  color: rgba(233,238,252,.88);
 }
 
+.pillRow{ margin-top: 10px; display:flex; justify-content:center; }
 .pill{
   display:inline-flex;
   align-items:center;
-  gap: 10px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.22);
   border-radius: 999px;
@@ -179,33 +292,18 @@ body.lockScroll{
   font-size: 13px;
 }
 
-#closeLetterBtn{
-  margin-top: 12px;
-  width: 100%;
-  border: 1px solid var(--stroke);
-  background: rgba(0,0,0,.22);
-  color: var(--text);
-  padding: 12px 14px;
-  border-radius: 16px;
-  font-weight: 900;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  cursor:pointer;
-}
-
-/* =========================
-   Player card
-========================= */
-#playerCard{
+/* Player */
+.playerCard{
   margin-top: 16px;
   border-radius: var(--radius);
   border: 1px solid var(--stroke);
   background: rgba(255,255,255,.05);
   box-shadow: var(--shadow);
   overflow:hidden;
+  position: relative;
+  z-index: 2;
 }
-
-#playerToggle{
+.playerToggle{
   width: 100%;
   display:flex;
   align-items:center;
@@ -216,18 +314,21 @@ body.lockScroll{
   background: transparent;
   color: var(--text);
   cursor:pointer;
-  font-weight: 900;
-  letter-spacing: .06em;
+  font-weight: 1000;
+  letter-spacing: .12em;
   text-transform: uppercase;
 }
+.toggleHint{
+  color: rgba(233,238,252,.55);
+  letter-spacing: .18em;
+  font-size: 11px;
+}
 
-#playerBody{
+.playerBody{
   padding: 14px 16px 16px;
   display:none;
 }
-#playerCard.isOpen #playerBody{
-  display:block;
-}
+.playerCard.isOpen .playerBody{ display:block; }
 
 .playerTop{
   display:flex;
@@ -236,36 +337,33 @@ body.lockScroll{
   gap: 12px;
   margin-bottom: 10px;
 }
-
-#trackTitle{
-  font-weight: 900;
-  font-size: 16px;
-}
-#trackMeta{
-  color: var(--muted);
-  font-size: 13px;
-}
+.trackTitle{ font-weight: 1000; font-size: 16px; }
+.trackMeta{ color: var(--muted); font-size: 13px; }
 
 .controls{
   display:flex;
   align-items:center;
   gap: 10px;
   margin: 10px 0 12px;
+  flex-wrap: wrap;
 }
-.controls button{
-  border: 1px solid var(--stroke);
-  background: rgba(0,0,0,.22);
-  color: var(--text);
-  padding: 10px 12px;
-  border-radius: 14px;
+.sliders{ display:flex; flex-direction:column; gap: 10px; }
+.sliderRow{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+.sliderLabel{
+  width: 44px;
+  color: rgba(233,238,252,.65);
   font-weight: 900;
-  cursor:pointer;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-size: 11px;
 }
-.controls input[type="range"]{
-  width: 100%;
-}
+input[type="range"]{ width: 100%; }
 
-#trackList{
+.trackList{
   list-style:none;
   padding:0;
   margin: 12px 0 0;
@@ -274,14 +372,13 @@ body.lockScroll{
   gap: 10px;
 }
 
-#trackList li{
+.trackList li{
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(0,0,0,.18);
   border-radius: 18px;
   padding: 12px 12px;
 }
-
-#trackList li.active{
+.trackList li.active{
   border-color: rgba(140,80,255,.55);
   box-shadow: 0 0 0 1px rgba(140,80,255,.18) inset;
 }
@@ -292,8 +389,7 @@ body.lockScroll{
   justify-content:space-between;
   gap: 10px;
 }
-
-.tname{ font-weight: 900; }
+.tname{ font-weight: 1000; }
 .tdur{ color: var(--muted); font-size: 13px; }
 
 .lyBtn{
@@ -304,10 +400,9 @@ body.lockScroll{
   color: var(--text);
   padding: 10px 12px;
   border-radius: 14px;
-  font-weight: 800;
+  font-weight: 900;
   cursor:pointer;
 }
-
 .lyBody{
   display:none;
   margin-top: 10px;
@@ -320,26 +415,16 @@ body.lockScroll{
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(0,0,0,.16);
 }
+.trackList li.showLyrics .lyBody{ display:block; }
 
-#trackList li.showLyrics .lyBody{
-  display:block;
-}
-
-/* =========================
-   Glitch FX
-========================= */
-.glitchPulse{
-  animation: glitchPulse .36s ease;
-}
+/* FX */
+.glitchPulse{ animation: glitchPulse .36s ease; }
 @keyframes glitchPulse{
   0%{ filter: saturate(1) contrast(1); }
   50%{ filter: saturate(1.4) contrast(1.25); }
   100%{ filter: saturate(1) contrast(1); }
 }
-
-.edgeTear{
-  animation: tear .52s ease;
-}
+.edgeTear{ animation: tear .52s ease; }
 @keyframes tear{
   0%{ clip-path: inset(0 0 0 0); }
   30%{ clip-path: inset(3% 0 2% 0); }
@@ -364,20 +449,15 @@ body.lockScroll{
   animation: starFly .52s ease forwards;
 }
 @keyframes starFly{
-  to{
-    transform: translate(var(--dx), var(--dy));
-    opacity: 0;
-  }
+  to{ transform: translate(var(--dx), var(--dy)); opacity: 0; }
 }
 
-/* =========================
-   MOBILE FULLSCREEN LETTER OVERLAY (the fix)
-========================= */
+/* Mobile fullscreen letter overlay (the actual fix) */
 #letterOverlay{
   position: fixed;
   inset: 0;
   z-index: 2147483647;
-  display: none; /* JS shows it */
+  display: none;
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,.70);
@@ -410,7 +490,7 @@ body.lockScroll{
   gap: 10px;
 }
 #letterOverlayHeader .ovTitle{
-  font-weight: 900;
+  font-weight: 1000;
   letter-spacing: .18em;
   text-transform: uppercase;
   font-size: 12px;
@@ -422,7 +502,7 @@ body.lockScroll{
   color: var(--text);
   border-radius: 12px;
   padding: 8px 12px;
-  font-weight: 900;
+  font-weight: 1000;
   cursor: pointer;
 }
 
@@ -433,15 +513,12 @@ body.lockScroll{
   padding: 14px 14px 92px;
 }
 
-/* When overlay open, letterPanel becomes “content”, not a fixed card */
 html.mobileLetterOverlayOpen #letterPanel{
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
   border-radius: 18px !important;
 }
-
-/* close button pinned bottom on mobile overlay */
 html.mobileLetterOverlayOpen #closeLetterBtn{
   position: fixed !important;
   left: 12px !important;
@@ -453,7 +530,9 @@ html.mobileLetterOverlayOpen #closeLetterBtn{
 /* Mobile polish */
 @media (max-width: 520px){
   .section{ padding: 18px 12px 22px; }
-  .hero{ margin-top: 14px; }
-  #playerToggle{ padding: 12px 14px; }
-  #playerBody{ padding: 12px 14px 14px; }
+  .hero{ margin-top: 12px; }
+  .stage{ padding: 14px; }
+  .env{ border-radius: 22px; }
+  .playerToggle{ padding: 12px 14px; }
+  .playerBody{ padding: 12px 14px 14px; }
 }
