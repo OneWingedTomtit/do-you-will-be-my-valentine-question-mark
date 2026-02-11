@@ -2,121 +2,142 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Do you will be my Valentine?</title>
-  <link rel="icon" href="data:," />
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Love mix 2025</title>
+<link rel="stylesheet" href="styles.v2.css">
+<script src="player.v2.js" defer></script>
+
 </head>
-
 <body>
-  <!-- SPLASH (Stage 0) -->
-  <div id="splash" class="splash" role="button" aria-label="Enter">
-    <div class="splash__noise" aria-hidden="true"></div>
-    <!-- Положи свою картинку сюда -->
-    <img class="splash__img" src="img/splash.png" alt="Intro" draggable="false">
-    <div class="splash__hint" aria-hidden="true">click to enter</div>
-  </div>
 
-  <!-- Click-glitch layer -->
-  <div id="glitchLayer" aria-hidden="true"></div>
+  <!-- overlays / fx layers (если у тебя они были раньше, оставляй) -->
+  <div class="fx fx-scanlines" aria-hidden="true"></div>
+  <div class="fx fx-grain" aria-hidden="true"></div>
+<div style="position:fixed;bottom:10px;right:10px;z-index:99999;background:#000;color:#0f0;padding:6px 10px;border-radius:10px;font:12px system-ui;">
+  BUILD: 2026-02-11  ✅
+</div>
 
-  <!-- PAGE (one continuous world) -->
-  <main class="page" id="pageRoot" aria-hidden="true">
-
-    <!-- Stage 1: Envelope -->
-    <section class="section hero" id="top">
-      <div class="wrap">
-        <button id="envelopeBtn" class="envelope microTarget" type="button" aria-expanded="false">
-
-          <!-- FRONT FACE -->
-          <div class="envFront">
-            <div class="envFront__title">For my dear boyfriend</div>
-            <div class="envFront__sub">click</div>
-          </div>
-
-          <!-- BACK / SHAPES -->
-          <div class="envelope__back"></div>
-          <div class="envelope__paper"></div>
-          <div class="envelope__flap"></div>
-          <div class="envelope__front"></div>
-
-          <!-- LETTER -->
-          <div id="letterPanel" class="letter" aria-hidden="true">
-            <div class="letter__inner microTarget">
-              <div class="letter__title">Happy Valentine’s Day</div>
-
-              <div class="letter__body" tabindex="0">
-                <p>Mattie,</p>
-                <p>
-                  Happy Valentine’s Day. This is a small listening space I made for you.
-                  I hope you will find joy in your gift!
-                </p>
-                <p>
-                  Thank you for being gentle, honest, and brave enough to reach out.
-                  I’m glad you’re in my life.
-                </p>
-                <p>— A.</p>
-              </div>
-
-              <div class="pill">P.S. I honk you very much!</div>
-
-              <button id="closeLetterBtn" class="closeLetterBtn" type="button">
-                Click again to close letter
-              </button>
-            </div>
-          </div>
-
-        </button>
-      </div>
-    </section>
-
-    <!-- Stage 2: Player -->
-    <section class="section stage" id="player">
-      <div class="wrap">
-        <div id="playerCard" class="playerCard microTarget">
-          <button id="playerToggle" class="playerToggle" type="button" aria-expanded="false">
-            <span class="playerToggle__title">Our two month</span>
-            <span class="playerToggle__hint">click to open</span>
-          </button>
-
-          <div id="playerBody" class="playerBody" aria-hidden="true">
-            <div class="playerTop">
-              <div class="brand">
-                <div class="brand__title">OUR TWO MONTH</div>
-                <div class="brand__sub">a private player</div>
-              </div>
-
-              <div class="now">
-                <div id="trackTitle" class="now__title">—</div>
-                <div id="trackMeta" class="now__meta">00:00 / 00:00</div>
-              </div>
-            </div>
-
-            <div class="controls">
-              <button id="prevBtn" class="iconBtn" type="button">←</button>
-              <button id="playBtn" class="playBtn" type="button">Play</button>
-              <button id="nextBtn" class="iconBtn" type="button">→</button>
-            </div>
-
-            <div class="progress">
-              <input id="seek" type="range" min="0" max="100" value="0" />
-            </div>
-
-            <div class="volumeRow">
-              <span class="volLabel">VOL</span>
-              <input id="vol" type="range" min="0" max="1" step="0.01" value="0.85" />
-            </div>
-
-            <ul id="trackList" class="trackList" aria-label="Track list"></ul>
-
-            <audio id="audio" preload="metadata"></audio>
-          </div>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand__dot"></span>
+        <div class="brand__text">
+          <div class="brand__title">Love mix 2025</div>
+          <div class="brand__sub">for Matti</div>
         </div>
       </div>
-    </section>
 
+      <button class="ghost" id="btnOpenLetterTop" type="button">Open letter</button>
+    </header>
+
+    <section class="grid">
+      <!-- Envelope -->
+      <section class="card">
+        <div class="card__header">
+          <h2>Envelope</h2>
+          <p class="muted">Desktop: letter inside envelope. Mobile: fullscreen letter.</p>
+        </div>
+
+        <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open letter">
+          <div class="envelope__top"></div>
+
+          <!-- DESKTOP letter container -->
+          <div class="envelope__paper" id="letterInline">
+            <article class="letter" id="letterContent">
+              <h3 class="letter__title">Do you will be my valentine?</h3>
+
+              <div class="letter__text">
+                <!-- ТУТ ТВОЁ ПИСЬМО (можешь вставить любое) -->
+                  <p>Mattie,</p>
+            <p>
+              Happy Valentine’s Day. This is a small listening space I made for you.
+              I hope you will find joy in your gift!
+            </p>
+            <p>
+              Thank you for being gentle, honest, and brave enough to reach out.
+              I’m glad you’re in my life.
+            </p>
+              </div>
+
+              <div class="letter__footer">
+                <div class="sig">— A.</div>
+                <button class="btn" id="btnCloseInline" type="button">Close</button>
+              </div>
+            </article>
+          </div>
+
+          <div class="envelope__bottom"></div>
+        </div>
+
+        <div class="actionsRow">
+          <button class="btn" id="btnOpenLetter" type="button">Open letter</button>
+          <button class="ghost" id="btnCloseLetter" type="button">Close</button>
+        </div>
+      </section>
+
+      <!-- Player -->
+      <section class="card">
+        <div class="card__header">
+          <h2>Player</h2>
+          <p class="muted">Playlist + durations + lyrics.</p>
+        </div>
+
+        <div class="player">
+          <div class="now">
+            <div class="now__meta">
+              <div class="now__title" id="nowTitle">—</div>
+              <div class="now__sub" id="nowSub"></div>
+            </div>
+            <div class="now__time">
+              <span id="timeCur">0:00</span>
+              <span class="muted">/</span>
+              <span id="timeDur">0:00</span>
+            </div>
+          </div>
+
+          <div class="bar" id="bar" role="slider" aria-label="Seek">
+            <div class="bar__fill" id="barFill"></div>
+            <div class="bar__knob" id="barKnob" aria-hidden="true"></div>
+          </div>
+
+          <div class="controls">
+            <button class="iconBtn" id="btnPrev" type="button" aria-label="Previous">⟨⟨</button>
+            <button class="iconBtn iconBtn--big" id="btnPlay" type="button" aria-label="Play/Pause">▶</button>
+            <button class="iconBtn" id="btnNext" type="button" aria-label="Next">⟩⟩</button>
+          </div>
+
+          <div class="playlistWrap">
+            <div class="playlistTitle">Tracklist</div>
+            <ul class="playlist" id="playlist"></ul>
+          </div>
+
+          <div class="lyricsWrap">
+            <div class="lyricsTitle">Lyrics</div>
+            <pre class="lyrics" id="lyrics"></pre>
+          </div>
+
+          <audio id="audio" preload="metadata"></audio>
+        </div>
+      </section>
+    </section>
   </main>
 
-  <script src="player.js" defer></script>
+  <!-- MOBILE fullscreen overlay -->
+  <div class="overlay" id="letterOverlay" aria-hidden="true">
+    <div class="overlay__sheet" role="dialog" aria-modal="true" aria-label="Letter">
+      <div class="overlay__header">
+        <div class="overlay__title">Letter</div>
+        <button class="ghost" id="btnOverlayX" type="button" aria-label="Close">✕</button>
+      </div>
+
+      <div class="overlay__body" id="overlayBody"></div>
+
+      <div class="overlay__footer">
+        <button class="btn btn--full" id="btnOverlayClose" type="button">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script.js" defer></script>
 </body>
 </html>
