@@ -549,3 +549,32 @@ html.mobileLetterOverlayOpen #closeLetterBtn{
   .playerToggle{ padding: 12px 14px; }
   .playerBody{ padding: 12px 14px 14px; }
 }
+
+/* ===== Fix: Close button overlaps P.S. pill ===== */
+
+/* Контейнер скролла внутри overlay уже имеет padding-bottom: 92px,
+   но сам letterPanel тоже должен иметь “воздух” внутри. */
+html.mobileLetterOverlayOpen #letterPanel .letter__body{
+  padding-bottom: 64px; /* место под кнопку */
+}
+
+/* На мобиле: нижняя кнопка фиксируется, но не должна перекрывать контент */
+html.mobileLetterOverlayOpen #closeLetterBtn{
+  position: fixed !important;
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 16px !important;
+  z-index: 2147483647 !important;
+  margin: 0 !important;
+}
+
+/* P.S. блоку убираем центрирование, чтобы он не “ловил” кнопку визуально */
+html.mobileLetterOverlayOpen .pillRow{
+  justify-content: flex-start !important;
+}
+
+/* Сам pill пусть будет на всю ширину, чтобы выглядел аккуратно */
+html.mobileLetterOverlayOpen .pill{
+  width: 100%;
+  justify-content: center;
+}
