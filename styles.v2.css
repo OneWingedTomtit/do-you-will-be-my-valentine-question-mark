@@ -436,8 +436,8 @@ input[type="range"]{ width: 100%; }
 #glitchLayer{
   position: fixed;
   inset: 0;
-  pointer-events:none;
-  z-index: 2147483647; /* same tier */
+  pointer-events: none;
+  z-index: 10;
 }
 
 #glitchLayer .star{
@@ -578,3 +578,5 @@ html.mobileLetterOverlayOpen .pill{
   width: 100%;
   justify-content: center;
 }
+
+#intro{ z-index: 2147483647 !important; }
