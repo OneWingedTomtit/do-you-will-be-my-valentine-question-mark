@@ -293,14 +293,23 @@ function maybeTear(el){
 ========================= */
 function hideIntro(){
   if (!intro) return;
+
+  // уводим фокус с кнопки внутри интро
+  envelopeBtn?.focus?.();
+
   pulse(intro);
   intro.classList.add("isHidden");
-  setTimeout(() => intro.setAttribute("aria-hidden","true"), 480);
+
+  // делаем интро реально "неактивным"
+  intro.setAttribute("aria-hidden","true");
+  intro.setAttribute("inert", "");
+
+  setTimeout(() => {
+    // на всякий случай: убрать из таб-порядка
+    intro.style.display = "none";
+  }, 480);
 }
-introBtn?.addEventListener("click", () => {
-  miniStars(window.innerWidth/2, window.innerHeight/2, 18);
-  hideIntro();
-});
+
 
 /* =========================
    MOBILE FULLSCREEN LETTER OVERLAY
@@ -314,6 +323,8 @@ function ensureOverlay(){
   letterOverlay = document.createElement("div");
   letterOverlay.id = "letterOverlay";
   letterOverlay.setAttribute("aria-hidden", "true");
+  letterOverlay.setAttribute("inert", "");
+
 
   const frame = document.createElement("div");
   frame.id = "letterOverlayFrame";
@@ -358,10 +369,12 @@ function openLetterOverlay(){
   document.documentElement.classList.add("mobileLetterOverlayOpen");
   document.body.classList.add("lockScroll");
 
-  ov.style.display = "flex";
-  ov.setAttribute("aria-hidden", "false");
+ov.style.display = "flex";
+ov.setAttribute("aria-hidden", "false");
+ov.removeAttribute("inert");
 
-  if (closeLetterBtn) closeLetterBtn.textContent = "Close";
+// фокус на крестик (чтобы клавиатура/скринридер были довольны)
+ov.querySelector(".ovX")?.focus?.();
 }
 
 function closeLetterOverlay(){
@@ -370,6 +383,26 @@ function closeLetterOverlay(){
 }
 
 function restoreLetterPanel(){
+  function restoreLetterPanel(){
+  if (!letterPanel) return;
+
+  // уводим фокус с элементов внутри overlay
+  envelopeBtn?.focus?.();
+
+  if (letterPlaceholder && letterPlaceholder.parentNode){
+    letterPlaceholder.parentNode.insertBefore(letterPanel, letterPlaceholder);
+  }
+
+  if (letterOverlay){
+    letterOverlay.style.display = "none";
+    letterOverlay.setAttribute("aria-hidden", "true");
+    letterOverlay.setAttribute("inert", "");
+  }
+
+  document.documentElement.classList.remove("mobileLetterOverlayOpen");
+  document.body.classList.remove("lockScroll");
+}
+
   if (!letterPanel) return;
 
   if (letterPlaceholder && letterPlaceholder.parentNode){
@@ -678,6 +711,8 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTrack(0, false);
   renderTrackList();
   preloadDurations();
+  intro?.removeAttribute("inert");
+
 });
 
 window.addEventListener("resize", () => applyEnvelope(), { passive:true });
