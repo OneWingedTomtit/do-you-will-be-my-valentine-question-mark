@@ -580,3 +580,4 @@ html.mobileLetterOverlayOpen .pill{
 }
 
 #intro{ z-index: 2147483647 !important; }
+.intro.isHidden{ display:none !important; }

@@ -1,5 +1,42 @@
 console.log("player.v2.js loaded");
 
+// ===== EMERGENCY INTRO KILLSWITCH (must work) =====
+(function(){
+  function killIntro(){
+    const intro = document.getElementById("intro");
+    if (!intro) return;
+
+    intro.classList.add("isHidden");
+    intro.setAttribute("aria-hidden", "true");
+    intro.setAttribute("inert", "");
+
+    // убрать слой физически, без ожиданий и анимаций
+    intro.style.display = "none";
+    document.body.classList.remove("lockScroll");
+    document.documentElement.classList.remove("mobileLetterOverlayOpen");
+
+    console.log("Intro: killed");
+  }
+
+  // Ловим клик по кнопке даже если JS ниже упал/не успел
+  document.addEventListener("click", (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest("#introBtn") : null;
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    killIntro();
+  }, true);
+
+  // На телефонах иногда лучше ловить pointerup
+  document.addEventListener("pointerup", (e) => {
+    const btn = e.target && e.target.closest ? e.target.closest("#introBtn") : null;
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    killIntro();
+  }, true);
+})();
+
 /* =========================
    DOM
 ========================= */
@@ -733,7 +770,6 @@ document.addEventListener("click", (e) => {
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
   wireIntro();            // ← ДОБАВЬ
-
   applyEnvelope();
   setPlayerOpen(false);
   loadTrack(0, false);
