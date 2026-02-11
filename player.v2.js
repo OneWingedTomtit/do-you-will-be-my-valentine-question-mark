@@ -289,26 +289,52 @@ function maybeTear(el){
 }
 
 /* =========================
-   INTRO
+   INTRO (bulletproof)
 ========================= */
 function hideIntro(){
   if (!intro) return;
 
-  // уводим фокус с кнопки внутри интро
-  envelopeBtn?.focus?.();
+  console.log("Intro: hide");
 
-  pulse(intro);
+  // визуально прячем
   intro.classList.add("isHidden");
 
-  // делаем интро реально "неактивным"
+  // a11y + защита от фокуса
   intro.setAttribute("aria-hidden","true");
-  intro.setAttribute("inert", "");
+  intro.setAttribute("inert","");
 
+  // гарантированно убираем слой через короткую паузу
   setTimeout(() => {
-    // на всякий случай: убрать из таб-порядка
     intro.style.display = "none";
-  }, 480);
+  }, 250);
 }
+
+function wireIntro(){
+  if (!intro) return;
+
+  // на всякий случай: интро активно до клика
+  intro.removeAttribute("inert");
+  intro.style.display = "";
+
+  const onOpen = (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+
+    // микро-эффект безопасно
+    try { miniStars(window.innerWidth/2, window.innerHeight/2, 18); } catch(_) {}
+
+    hideIntro();
+  };
+
+  // кнопка
+  introBtn?.addEventListener("click", onOpen);
+
+  // и клик по самому фону интро тоже открывает (на мобиле это удобно)
+  intro.addEventListener("click", (e) => {
+    if (e.target === intro) onOpen(e);
+  });
+}
+
 
 
 /* =========================
@@ -706,13 +732,14 @@ document.addEventListener("click", (e) => {
    INIT
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
+  wireIntro();            // ← ДОБАВЬ
+
   applyEnvelope();
   setPlayerOpen(false);
   loadTrack(0, false);
   renderTrackList();
   preloadDurations();
-  intro?.removeAttribute("inert");
-
 });
+
 
 window.addEventListener("resize", () => applyEnvelope(), { passive:true });
