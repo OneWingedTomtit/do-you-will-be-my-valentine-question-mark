@@ -1,19 +1,4 @@
-console.log("player.js loaded");
-document.addEventListener("DOMContentLoaded", () => {
-  const b = document.createElement("div");
-  b.textContent = "BUILD ✅ V2 LOADED";
-  b.style.cssText = "position:fixed;top:10px;left:10px;z-index:2147483647;background:#001b00;color:#34ff6a;padding:6px 10px;border-radius:10px;font:12px system-ui";
-  document.body.appendChild(b);
-});
-
-// ===== HARD BUILD BADGE (если не видишь — ты не тот файл открыла) =====
-document.addEventListener("DOMContentLoaded", () => {
-  const b = document.createElement("div");
-  b.textContent = "BUILD ✅ player.js overlay v1";
-  b.style.cssText =
-    "position:fixed;top:10px;left:10px;z-index:2147483647;background:#001b00;color:#34ff6a;padding:6px 10px;border-radius:10px;font:12px system-ui;opacity:.85";
-  document.body.appendChild(b);
-});
+console.log("player.v2.js loaded");
 
 /* =========================
    DOM
@@ -304,180 +289,6 @@ function maybeTear(el){
 }
 
 /* =========================
-   MOBILE LETTER OVERLAY (REAL FIX)
-   - Overlay appended to BODY (not inside .hero transforms)
-   - Moves letterPanel into overlay on open
-   - Moves it back on close
-========================= */
-let letterOverlay = null;
-let letterPlaceholder = null;
-
-function ensureLetterOverlay(){
-  if (letterOverlay) return letterOverlay;
-
-  letterOverlay = document.createElement("div");
-  letterOverlay.id = "letterOverlay";
-  letterOverlay.setAttribute("aria-hidden", "true");
-  letterOverlay.style.cssText = `
-    position: fixed;
-    inset: 0;
-    z-index: 2147483647;
-    display: none;
-    background: rgba(0,0,0,.70);
-    backdrop-filter: blur(10px);
-    padding: max(12px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
-             max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-  `;
-
-  const frame = document.createElement("div");
-  frame.id = "letterOverlayFrame";
-  frame.style.cssText = `
-    height: 100%;
-    width: 100%;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,.16);
-    background: rgba(10,12,20,.94);
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 18px 60px rgba(0,0,0,.55);
-  `;
-
-  const head = document.createElement("div");
-  head.style.cssText = `
-    padding: 12px 12px;
-    border-bottom: 1px solid rgba(255,255,255,.10);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  `;
-  head.innerHTML = `
-    <div style="font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:12px;color:rgba(233,238,252,.85)">
-      Letter
-    </div>
-    <button id="overlayX" type="button"
-      style="border:1px solid rgba(255,255,255,.16);background:transparent;color:#e9eefc;border-radius:12px;padding:8px 12px;font-weight:900;cursor:pointer">
-      ✕
-    </button>
-  `;
-
-  const body = document.createElement("div");
-  body.id = "letterOverlayBody";
-  body.style.cssText = `
-    flex: 1 1 auto;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 14px 14px 90px;
-  `;
-
-  const foot = document.createElement("div");
-  foot.style.cssText = `
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    bottom: 12px;
-    z-index: 2147483647;
-  `;
-  // NOTE: we will NOT create another close button
-  // we will reuse YOUR existing #closeLetterBtn and pin it
-
-  frame.appendChild(head);
-  frame.appendChild(body);
-  letterOverlay.appendChild(frame);
-  document.body.appendChild(letterOverlay);
-
-  // click outside frame to close
-  letterOverlay.addEventListener("click", (e) => {
-    if (e.target === letterOverlay) closeMobileLetter();
-  });
-  letterOverlay.querySelector("#overlayX")?.addEventListener("click", closeMobileLetter);
-
-  return letterOverlay;
-}
-
-function openMobileLetter(){
-  if (!letterPanel) return;
-
-  const ov = ensureLetterOverlay();
-  const ovBody = ov.querySelector("#letterOverlayBody");
-  if (!ovBody) return;
-
-  // placeholder to restore original position
-  if (!letterPlaceholder){
-    letterPlaceholder = document.createComment("letterPanel-placeholder");
-    letterPanel.parentNode?.insertBefore(letterPlaceholder, letterPanel);
-  }
-
-  // move actual panel into overlay body
-  ovBody.appendChild(letterPanel);
-
-  // force it to fill width inside overlay
-  letterPanel.style.setProperty("display", "block", "important");
-  letterPanel.style.setProperty("width", "100%", "important");
-  letterPanel.style.setProperty("max-width", "none", "important");
-  letterPanel.style.setProperty("margin", "0", "important");
-  letterPanel.style.setProperty("border-radius", "18px", "important");
-  letterPanel.style.setProperty("overflow", "visible", "important");
-
-  // unsqueeze known inner blocks
-  letterPanel.querySelectorAll(".letter__title, .letter__body, p").forEach(el => {
-    el.style.setProperty("max-width", "none", "important");
-    el.style.setProperty("width", "100%", "important");
-  });
-
-  // pin your close button at bottom
-  if (closeLetterBtn){
-    closeLetterBtn.textContent = "Close";
-    closeLetterBtn.style.setProperty("position", "fixed", "important");
-    closeLetterBtn.style.setProperty("left", "12px", "important");
-    closeLetterBtn.style.setProperty("right", "12px", "important");
-    closeLetterBtn.style.setProperty("bottom", "12px", "important");
-    closeLetterBtn.style.setProperty("z-index", "2147483647", "important");
-  }
-
-  ov.style.display = "block";
-  ov.setAttribute("aria-hidden", "false");
-  document.body.classList.add("lockScroll");
-}
-
-function closeMobileLetter(){
-  // close state goes through same flow
-  envState = 0;
-  applyEnvelope();
-}
-
-function restoreLetterPanelToOriginalPlace(){
-  if (!letterPanel) return;
-
-  // restore close button
-  if (closeLetterBtn){
-    closeLetterBtn.style.removeProperty("position");
-    closeLetterBtn.style.removeProperty("left");
-    closeLetterBtn.style.removeProperty("right");
-    closeLetterBtn.style.removeProperty("bottom");
-    closeLetterBtn.style.removeProperty("z-index");
-  }
-
-  if (letterPlaceholder && letterPlaceholder.parentNode){
-    letterPlaceholder.parentNode.insertBefore(letterPanel, letterPlaceholder);
-  }
-
-  // remove temporary styles
-  letterPanel.style.removeProperty("display");
-  letterPanel.style.removeProperty("width");
-  letterPanel.style.removeProperty("max-width");
-  letterPanel.style.removeProperty("margin");
-  letterPanel.style.removeProperty("border-radius");
-  letterPanel.style.removeProperty("overflow");
-
-  letterPanel.querySelectorAll(".letter__title, .letter__body, p").forEach(el => {
-    el.style.removeProperty("max-width");
-    el.style.removeProperty("width");
-  });
-}
-
-/* =========================
    INTRO
 ========================= */
 function hideIntro(){
@@ -491,6 +302,102 @@ introBtn?.addEventListener("click", () => {
   miniStars(window.innerWidth/2, window.innerHeight/2, 18);
   hideIntro();
 });
+
+/* =========================
+   MOBILE FULLSCREEN LETTER OVERLAY
+   - Moves #letterPanel into <body> overlay on mobile when opened
+   - Avoids transform bugs forever
+========================= */
+let letterOverlay = null;
+let letterPlaceholder = null;
+
+function ensureOverlay(){
+  if (letterOverlay) return letterOverlay;
+
+  letterOverlay = document.createElement("div");
+  letterOverlay.id = "letterOverlay";
+  letterOverlay.setAttribute("aria-hidden", "true");
+
+  const frame = document.createElement("div");
+  frame.id = "letterOverlayFrame";
+
+  const header = document.createElement("div");
+  header.id = "letterOverlayHeader";
+  header.innerHTML = `
+    <div class="ovTitle">Letter</div>
+    <button type="button" class="ovX" aria-label="Close">✕</button>
+  `;
+
+  const body = document.createElement("div");
+  body.id = "letterOverlayBody";
+
+  frame.appendChild(header);
+  frame.appendChild(body);
+  letterOverlay.appendChild(frame);
+  document.body.appendChild(letterOverlay);
+
+  // close by clicking backdrop
+  letterOverlay.addEventListener("click", (e) => {
+    if (e.target === letterOverlay) closeLetterOverlay();
+  });
+
+  // close by X
+  header.querySelector(".ovX")?.addEventListener("click", closeLetterOverlay);
+
+  return letterOverlay;
+}
+
+function openLetterOverlay(){
+  if (!letterPanel) return;
+
+  const ov = ensureOverlay();
+  const ovBody = ov.querySelector("#letterOverlayBody");
+  if (!ovBody) return;
+
+  // save original spot
+  if (!letterPlaceholder){
+    letterPlaceholder = document.createComment("letterPanel-placeholder");
+    letterPanel.parentNode?.insertBefore(letterPlaceholder, letterPanel);
+  }
+
+  // move panel into overlay
+  ovBody.appendChild(letterPanel);
+
+  // mode flags for CSS
+  document.documentElement.classList.add("mobileLetterOverlayOpen");
+  document.body.classList.add("lockScroll");
+
+  // adjust close button text on mobile
+  if (closeLetterBtn) closeLetterBtn.textContent = "Close";
+
+  // make sure aria matches
+  ov.style.display = "flex";
+  ov.setAttribute("aria-hidden", "false");
+}
+
+function closeLetterOverlay(){
+  // keep close logic centralized
+  envState = 0;
+  applyEnvelope();
+}
+
+function restoreLetterPanel(){
+  if (!letterPanel) return;
+
+  // move back to original DOM spot
+  if (letterPlaceholder && letterPlaceholder.parentNode){
+    letterPlaceholder.parentNode.insertBefore(letterPanel, letterPlaceholder);
+  }
+
+  // hide overlay
+  if (letterOverlay){
+    letterOverlay.style.display = "none";
+    letterOverlay.setAttribute("aria-hidden", "true");
+  }
+
+  document.documentElement.classList.remove("mobileLetterOverlayOpen");
+  document.body.classList.remove("lockScroll");
+}
 
 /* =========================
    ENVELOPE FSM
@@ -509,22 +416,16 @@ function applyEnvelope(){
   envelopeBtn?.setAttribute("aria-expanded", String(isLetter));
   letterPanel?.setAttribute("aria-hidden", String(!isLetter));
 
-  // desktop text
+  // button label
   if (closeLetterBtn){
     closeLetterBtn.textContent = mobile ? "Close" : "CLICK AGAIN TO CLOSE LETTER";
   }
 
-  // Mobile: move to overlay (outside transforms)
+  // MOBILE: fullscreen overlay
   if (mobile && isLetter){
-    openMobileLetter();
+    openLetterOverlay();
   } else {
-    // close overlay if exists
-    if (letterOverlay){
-      letterOverlay.style.display = "none";
-      letterOverlay.setAttribute("aria-hidden", "true");
-    }
-    document.body.classList.remove("lockScroll");
-    restoreLetterPanelToOriginalPlace();
+    restoreLetterPanel();
   }
 }
 
@@ -777,6 +678,7 @@ document.addEventListener("click", (e) => {
   miniStars(e.clientX, e.clientY, 10);
 }, { passive:true });
 
+/* ambient glitch on scroll */
 let scrollTick = 0;
 window.addEventListener("scroll", () => {
   const now = Date.now();
@@ -801,6 +703,5 @@ document.addEventListener("DOMContentLoaded", () => {
   preloadDurations();
 });
 
-window.addEventListener("resize", () => {
-  applyEnvelope();
-}, { passive:true });
+// If open letter and screen changes, re-apply mode safely
+window.addEventListener("resize", () => applyEnvelope(), { passive:true });

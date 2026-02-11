@@ -1,11 +1,17 @@
+/* =========================
+   Theme
+========================= */
 :root{
   --bg0:#070810;
   --bg1:#0b0d1a;
+  --glass: rgba(255,255,255,.06);
+  --glass2: rgba(255,255,255,.10);
   --stroke: rgba(255,255,255,.14);
   --text:#e9eefc;
   --muted: rgba(233,238,252,.70);
   --shadow: 0 20px 60px rgba(0,0,0,.55);
   --radius: 22px;
+  --radius2: 16px;
 }
 
 *{ box-sizing:border-box; }
@@ -26,7 +32,9 @@ body.lockScroll{
   touch-action: none;
 }
 
-/* Intro */
+/* =========================
+   Intro overlay
+========================= */
 #intro{
   position: fixed;
   inset: 0;
@@ -43,7 +51,9 @@ body.lockScroll{
   transition: opacity .45s ease;
 }
 
-/* Layout */
+/* =========================
+   Layout
+========================= */
 .section{
   width: 100%;
   min-height: 100vh;
@@ -59,7 +69,37 @@ body.lockScroll{
   position: relative;
 }
 
-/* envelope button */
+/* =========================
+   Envelope / Stage
+   (Если у тебя в HTML есть .stage/.topRow/.brand — они красиво оживут.
+    Если нет — ничего не ломаем.)
+========================= */
+.hero .stage{
+  position: relative;
+  border-radius: var(--radius);
+  border: 1px solid var(--stroke);
+  background: rgba(255,255,255,.05);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  padding: 18px;
+}
+
+.hero .topRow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.hero .brand{
+  font-weight: 900;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(233,238,252,.85);
+}
+
 #envelopeBtn{
   border: 1px solid var(--stroke);
   background: rgba(0,0,0,.22);
@@ -70,7 +110,25 @@ body.lockScroll{
   cursor:pointer;
 }
 
-/* letterPanel default (desktop card) */
+/* Desktop flip */
+@media (min-width: 981px){
+  .hero.isFlip .stage{
+    transform: perspective(1000px) rotateY(10deg);
+    transform-origin: center;
+    transition: transform .45s ease;
+  }
+  .hero.isBack .stage{
+    transform: perspective(1000px) rotateY(160deg);
+  }
+  .hero.isLetter .stage{
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+/* =========================
+   Letter panel (desktop card)
+========================= */
+#letterPanel.letter,
 #letterPanel{
   width: min(620px, 92vw);
   margin: 12px auto 0;
@@ -80,9 +138,46 @@ body.lockScroll{
   backdrop-filter: blur(12px);
   box-shadow: 0 16px 50px rgba(0,0,0,.45);
   padding: 16px 16px 14px;
+  overflow: hidden;
 }
 
-#letterPanel[aria-hidden="true"]{ display:none; }
+#letterPanel[aria-hidden="true"]{
+  display:none;
+}
+
+.letter__title{
+  text-align:center;
+  font-weight: 900;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(233,238,252,.78);
+  margin: 4px 0 12px;
+}
+
+.letter__body{
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  background: rgba(0,0,0,.18);
+  padding: 12px 12px;
+}
+
+.letter__body p{
+  margin: 8px 0;
+  color: rgba(233,238,252,.86);
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap: 10px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.22);
+  border-radius: 999px;
+  padding: 10px 12px;
+  color: rgba(233,238,252,.82);
+  font-size: 13px;
+}
 
 #closeLetterBtn{
   margin-top: 12px;
@@ -98,7 +193,9 @@ body.lockScroll{
   cursor:pointer;
 }
 
-/* Player */
+/* =========================
+   Player card
+========================= */
 #playerCard{
   margin-top: 16px;
   border-radius: var(--radius);
@@ -128,7 +225,45 @@ body.lockScroll{
   padding: 14px 16px 16px;
   display:none;
 }
-#playerCard.isOpen #playerBody{ display:block; }
+#playerCard.isOpen #playerBody{
+  display:block;
+}
+
+.playerTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+#trackTitle{
+  font-weight: 900;
+  font-size: 16px;
+}
+#trackMeta{
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+  margin: 10px 0 12px;
+}
+.controls button{
+  border: 1px solid var(--stroke);
+  background: rgba(0,0,0,.22);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-weight: 900;
+  cursor:pointer;
+}
+.controls input[type="range"]{
+  width: 100%;
+}
 
 #trackList{
   list-style:none;
@@ -186,9 +321,33 @@ body.lockScroll{
   background: rgba(0,0,0,.16);
 }
 
-#trackList li.showLyrics .lyBody{ display:block; }
+#trackList li.showLyrics .lyBody{
+  display:block;
+}
 
-/* Glitch stars */
+/* =========================
+   Glitch FX
+========================= */
+.glitchPulse{
+  animation: glitchPulse .36s ease;
+}
+@keyframes glitchPulse{
+  0%{ filter: saturate(1) contrast(1); }
+  50%{ filter: saturate(1.4) contrast(1.25); }
+  100%{ filter: saturate(1) contrast(1); }
+}
+
+.edgeTear{
+  animation: tear .52s ease;
+}
+@keyframes tear{
+  0%{ clip-path: inset(0 0 0 0); }
+  30%{ clip-path: inset(3% 0 2% 0); }
+  60%{ clip-path: inset(0 1% 0 0); }
+  100%{ clip-path: inset(0 0 0 0); }
+}
+
+/* Stars */
 #glitchLayer{
   position: fixed;
   inset: 0;
@@ -205,10 +364,93 @@ body.lockScroll{
   animation: starFly .52s ease forwards;
 }
 @keyframes starFly{
-  to{ transform: translate(var(--dx), var(--dy)); opacity: 0; }
+  to{
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
 }
 
-/* Small mobile polish */
+/* =========================
+   MOBILE FULLSCREEN LETTER OVERLAY (the fix)
+========================= */
+#letterOverlay{
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: none; /* JS shows it */
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,.70);
+  backdrop-filter: blur(10px);
+  padding:
+    max(12px, env(safe-area-inset-top))
+    max(12px, env(safe-area-inset-right))
+    max(12px, env(safe-area-inset-bottom))
+    max(12px, env(safe-area-inset-left));
+}
+
+#letterOverlayFrame{
+  width: min(920px, 100%);
+  height: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(10,12,20,.94);
+  box-shadow: 0 18px 60px rgba(0,0,0,.55);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#letterOverlayHeader{
+  padding: 12px 12px;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+#letterOverlayHeader .ovTitle{
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  font-size: 12px;
+  color: rgba(233,238,252,.85);
+}
+#letterOverlayHeader .ovX{
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(0,0,0,.12);
+  color: var(--text);
+  border-radius: 12px;
+  padding: 8px 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+#letterOverlayBody{
+  flex: 1 1 auto;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px 14px 92px;
+}
+
+/* When overlay open, letterPanel becomes “content”, not a fixed card */
+html.mobileLetterOverlayOpen #letterPanel{
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  border-radius: 18px !important;
+}
+
+/* close button pinned bottom on mobile overlay */
+html.mobileLetterOverlayOpen #closeLetterBtn{
+  position: fixed !important;
+  left: 12px !important;
+  right: 12px !important;
+  bottom: 12px !important;
+  z-index: 2147483647 !important;
+}
+
+/* Mobile polish */
 @media (max-width: 520px){
   .section{ padding: 18px 12px 22px; }
   .hero{ margin-top: 14px; }
